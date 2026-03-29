@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Built an Always-On AI Assistant for $6/Month — Here's the Full Setup Guide</title>
+    <meta property="og:title" content="I Built an Always-On AI Assistant for $6/Month — Here's the Full Setup Guide">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-03-29">
+    <meta name="author" content="Vinoth">
+</head>
+<body>
+<article>
+<h1>I Built an Always-On AI Assistant for $6/Month — Here's the Full Setup Guide</h1>
+<p><em>From Telegram Bot to a Personal AI That Never Sleeps</em></p>
+<p>Imagine having an AI assistant that lives in your Telegram, responds to voice messages, sends you daily stock market briefings, tracks your favorite cricket scores, and can execute code, browse the web, and manage your server — all running autonomously on a $6/month VPS.</p>
+<p>That's exactly what I built with <strong>Hermes Agent</strong>.</p>
+<p>No OpenAI API bills burning a hole in my pocket. No complex cloud deployments. Just a single server and a Telegram bot that became my always-on AI companion.</p>
+<p>Here's how I did it, step by step.</p>
+<h2>Why I Wanted This</h2>
+<p>I was tired of opening ChatGPT in a browser every time I had a question. I wanted something that:</p>
+<ul>
+<li>Lives in my phone (Telegram)</li>
+<li>Understands voice messages</li>
+<li>Can actually do things (run code, search the web, manage files)</li>
+<li>Sends me proactive updates (market news, AI news)</li>
+<li>Costs almost nothing to run</li>
+</ul>
+<p>After trying various solutions — ChatGPT API wrappers, custom LangChain setups, even running local LLMs — I found that none gave me the full package. Then I discovered Hermes Agent.</p>
+<h2>What is Hermes Agent?</h2>
+<p>Hermes Agent is an open-source AI agent framework by Nous Research. Think of it as the "brain" that connects an LLM to real-world tools — terminal access, file operations, web browsing, cron scheduling, and messaging platforms like Telegram, Discord, Slack, and WhatsApp.</p>
+<p>It's not just a chatbot. It's an <strong>agent</strong> — meaning it can think, plan, and execute multi-step tasks autonomously.</p>
+<p>Key features that sold me:</p>
+<ul>
+<li><strong>Multi-platform messaging</strong> — Telegram, Discord, Slack, WhatsApp, Signal</li>
+<li><strong>Voice messages</strong> — Send voice, get voice back</li>
+<li><strong>Tool execution</strong> — Run shell commands, browse the web, manage files</li>
+<li><strong>Scheduled tasks</strong> — Cron jobs for daily briefings</li>
+<li><strong>Persistent memory</strong> — Remembers things across sessions</li>
+<li><strong>Skills system</strong> — Extensible with community skills</li>
+<li><strong>Smart model routing</strong> — Use cheap models for simple tasks, powerful ones for complex ones</li>
+</ul>
+<h2>The Hardware: A $6/month VPS</h2>
+<p>Here's the beauty — you don't need expensive hardware.</p>
+<p><strong>My Setup:</strong></p>
+<ul>
+<li><strong>Provider:</strong> Hetzner Cloud (Helsinki)</li>
+<li><strong>Plan:</strong> CX22 (4 vCPU, 8 GB RAM, 150 GB NVMe)</li>
+<li><strong>OS:</strong> Ubuntu 24.04 LTS</li>
+<li><strong>Cost:</strong> ~$6/month (€5.47)</li>
+</ul>
+<p>That's it. No GPU needed. No fancy hardware. Just a basic VPS.</p>
+<blockquote><p><strong>💡 Why no GPU?</strong> Hermes uses cloud LLM APIs for inference, so the VPS only needs to run the agent software itself, which is lightweight. The heavy lifting (model inference) happens on the cloud provider's servers.</p></blockquote>
+<h2>Step 1: Server Setup</h2>
+<p>First, SSH into your fresh VPS and update the system:</p>
+<pre><code>sudo apt update &amp;&amp; sudo apt upgrade -y
+sudo apt install -y python3 python3-pip python3-venv git curl</code></pre>
+<p>Create a user for Hermes (don't run as root):</p>
+<pre><code>sudo useradd -m -s /bin/bash hermes
+sudo usermod -aG sudo hermes
+sudo su - hermes</code></pre>
+<h2>Step 2: Install Hermes Agent</h2>
+<pre><code>git clone https://github.com/nousresearch/hermes-agent.git ~/.hermes/hermes-agent
+cd ~/.hermes/hermes-agent
+python3 -m venv venv
+source venv/bin/activate
+pip install -e .</code></pre>
+<p>That's the core installation. Hermes Agent is now on your server.</p>
+<h2>Step 3: Choose Your LLM Provider</h2>
+<p>This is where you decide which AI "brain" powers your assistant. Hermes supports dozens of providers:</p>
+<ul>
+<li>OpenAI (GPT-4o, GPT-4, etc.)</li>
+<li>Anthropic (Claude)</li>
+<li>Google (Gemini)</li>
+<li>OpenRouter (access to 200+ models)</li>
+<li>Nous Research</li>
+<li>DeepSeek</li>
+<li>Z.AI / GLM (what I use)</li>
+<li>And many more...</li>
+</ul>
+<p><strong>My choice: Z.AI Coding Plan</strong></p>
+<p>I went with Z.AI's coding plan because it offers excellent value:</p>
+<ul>
+<li><strong>Model:</strong> GLM-5 Turbo</li>
+<li><strong>Endpoint:</strong> <code>https://api.z.ai/api/coding/paas/v4</code></li>
+<li><strong>Cost:</strong> Very affordable subscription (not pay-per-token)</li>
+</ul>
+<p>Run the setup wizard:</p>
+<pre><code>cd ~/.hermes/hermes-agent
+source venv/bin/activate
+hermes setup</code></pre>
+<p>This walks you through provider selection, API key entry, and model configuration. It stores everything securely in <code>~/.hermes/.env</code>.</p>
+<h2>Step 4: Connect Telegram</h2>
+<p>This is where it gets fun — your AI now lives in your phone.</p>
+<p><strong>1. Create a Telegram Bot:</strong></p>
+<ul>
+<li>Open Telegram, search for @BotFather</li>
+<li>Send <code>/newbot</code></li>
+<li>Pick a name and username</li>
+<li>Copy the bot token</li>
+</ul>
+<p><strong>2. Configure Hermes:</strong></p>
+<pre><code>hermes config set telegram.bot_token "YOUR_BOT_TOKEN"
+hermes config set telegram.allowed_users "YOUR_TELEGRAM_ID"
+hermes config set telegram.home_channel "YOUR_TELEGRAM_ID"</code></pre>
+<p><strong>3. Start the Gateway:</strong></p>
+<pre><code>hermes gateway run</code></pre>
+<p>Now message your bot on Telegram. It works!</p>
+<p><strong>4. Install as a Service (so it survives reboots):</strong></p>
+<pre><code>hermes gateway install</code></pre>
+<p>This creates a systemd service that auto-starts Hermes on boot and restarts it if it crashes.</p>
+<h2>Step 5: Enable Voice Messages</h2>
+<p>This was a game-changer. I can send voice notes while driving and get voice responses back.</p>
+<p><strong>Speech-to-Text (STT) — understanding your voice:</strong></p>
+<pre><code>cd ~/.hermes/hermes-agent
+source venv/bin/activate
+pip install faster-whisper</code></pre>
+<p>In <code>~/.hermes/config.yaml</code>:</p>
+<pre><code>stt:
+  enabled: true
+  provider: local
+  local:
+    model: base</code></pre>
+<p>The <code>base</code> model downloads automatically (~150 MB) and runs on CPU. It's fast enough for real-time transcription.</p>
+<p><strong>Text-to-Speech (TTS) — the AI talks back:</strong></p>
+<p>I used Microsoft Edge TTS (free, no API key needed):</p>
+<pre><code>tts:
+  provider: edge
+  edge:
+    voice: en-US-AriaNeural</code></pre>
+<p>Enable auto voice replies:</p>
+<pre><code>voice:
+  auto_tts: true</code></pre>
+<p>Now when I send a voice message, Hermes transcribes it, processes it, and replies with a voice note. The full pipeline:</p>
+<pre><code>Your Voice → Whisper (local STT) → GLM-5 Turbo (AI brain) → Edge TTS → Voice Reply</code></pre>
+<h2>Step 6: Enable Tools</h2>
+<p>Hermes has a rich set of tools. Enable them for your platform:</p>
+<pre><code>hermes tools</code></pre>
+<p>This opens an interactive selector. For Telegram, I enabled:</p>
+<table>
+<thead><tr><th>Tool</th><th>What It Does</th></tr></thead>
+<tbody>
+<tr><td>terminal</td><td>Run shell commands on the VPS</td></tr>
+<tr><td>file</td><td>Read, write, search files</td></tr>
+<tr><td>web</td><td>Web search and page extraction</td></tr>
+<tr><td>browser</td><td>Browser automation</td></tr>
+<tr><td>cronjob</td><td>Schedule recurring tasks</td></tr>
+<tr><td>memory</td><td>Persistent cross-session memory</td></tr>
+<tr><td>vision</td><td>Analyze images</td></tr>
+<tr><td>code_execution</td><td>Run Python scripts</td></tr>
+<tr><td>delegation</td><td>Spawn sub-agents for parallel tasks</td></tr>
+<tr><td>tts</td><td>Voice message replies</td></tr>
+<tr><td>skills</td><td>Load extensible skill sets</td></tr>
+</tbody>
+</table>
+<p>After enabling tools, send <code>/reset</code> in Telegram to activate them.</p>
+<h2>Step 7: Set Up Automated Daily Briefings</h2>
+<p>This is where Hermes went from "cool toy" to "actually useful." I set up three automated daily briefings that arrive in my Telegram every morning:</p>
+<p><strong>1. US Market Daily Briefing</strong></p>
+<pre><code>hermes cron create \
+  --name "US Market Daily Briefing" \
+  --schedule "every 1440m" \
+  --deliver telegram \
+  --prompt "Generate a comprehensive US market briefing covering S&amp;P 500, Dow, Nasdaq, sector performance, commodities, and bond yields."</code></pre>
+<p><strong>2. Daily GenAI Briefing</strong></p>
+<pre><code>hermes cron create \
+  --name "Daily GenAI Briefing" \
+  --schedule "0 9 * * *" \
+  --deliver telegram \
+  --prompt "Search HackerNews, Reddit, GitHub trending, and Twitter for the latest AI/ML news. Summarize the top 10 stories."</code></pre>
+<p><strong>3. Indian Market Daily Briefing</strong></p>
+<pre><code>hermes cron create \
+  --name "Indian Market Daily Briefing" \
+  --schedule "every 1440m" \
+  --deliver telegram \
+  --prompt "Generate a briefing on Sensex, Nifty 50, sector performance, USD/INR, and FII/DII activity."</code></pre>
+<p>These run autonomously — Hermes wakes up, does the research, writes the briefing, and delivers it to my Telegram. I wake up to fresh market news every morning.</p>
+<h2>Step 8: Persistent Memory</h2>
+<p>One feature that makes Hermes feel like a real assistant is its persistent memory system.</p>
+<p>It remembers:</p>
+<ul>
+<li>My name, preferences, and communication style</li>
+<li>Facts about my environment (server specs, installed tools)</li>
+<li>Corrections I've made ("don't include Indian markets unless I ask")</li>
+<li>Project conventions and pitfalls we've discovered together</li>
+</ul>
+<p>This memory carries across sessions. I don't have to repeat myself.</p>
+<h2>Step 9: Skills System</h2>
+<p>Hermes has a skills system that extends its capabilities. Think of skills as reusable recipes.</p>
+<p>Some of my favorites:</p>
+<ul>
+<li><strong>claude-code / codex</strong> — Delegate coding tasks to Claude or Codex</li>
+<li><strong>jupyter-live-kernel</strong> — Interactive data analysis</li>
+<li><strong>github-pr-workflow</strong> — Full pull request lifecycle</li>
+<li><strong>youtube-content</strong> — Fetch and summarize YouTube videos</li>
+<li><strong>polymarket</strong> — Query prediction market data</li>
+<li><strong>plan</strong> — Structured planning for complex tasks</li>
+</ul>
+<h2>Step 10: Maintenance &amp; Monitoring</h2>
+<p>To keep everything running smoothly, I set up automated maintenance:</p>
+<pre><code># Maintenance script runs every 5 minutes via system crontab
+crontab -e
+# Add: */5 * * * * /home/hermes/.hermes/scripts/maintenance.sh</code></pre>
+<p>The maintenance script handles:</p>
+<ul>
+<li>Gateway health checks</li>
+<li>Memory and disk monitoring</li>
+<li>Log rotation (keeps logs under 1 MB)</li>
+<li>Telegram polling verification</li>
+<li>Cron job status checks</li>
+<li>Auto-update every 3 days (with passwordless sudo)</li>
+</ul>
+<h2>The Config That Makes It All Work</h2>
+<p>Here's a simplified version of my <code>~/.hermes/config.yaml</code>:</p>
+<pre><code>model:
+  base_url: https://api.z.ai/api/coding/paas/v4
+  default: glm-5-turbo
+  provider: zai
+
+agent:
+  max_turns: 60
+  reasoning_effort: medium
+
+stt:
+  enabled: true
+  provider: local
+  local:
+    model: base
+
+tts:
+  provider: edge
+  edge:
+    voice: en-US-AriaNeural
+
+voice:
+  auto_tts: true
+
+memory:
+  memory_enabled: true
+  flush_min_turns: 6
+
+compression:
+  enabled: true
+  target_ratio: 0.2
+
+session_reset:
+  at_hour: 4
+  idle_minutes: 1440
+  mode: both</code></pre>
+<h2>What My Daily Workflow Looks Like</h2>
+<p><strong>Morning:</strong> Wake up to three briefing messages — US markets, Indian markets, and GenAI news — already waiting in Telegram.</p>
+<p><strong>Throughout the day:</strong></p>
+<ul>
+<li>"What happened in the RCB match?" → Get a full scorecard</li>
+<li>Voice message: "Can you check the latest on Qwen 3.5?" → Get a researched answer</li>
+<li>"Write a Python script to parse this CSV" → Get working code</li>
+<li>"Deploy this to GitHub" → Done automatically</li>
+</ul>
+<p><strong>Evening:</strong> No need to check anything. If something important happened, Hermes already told me.</p>
+<h2>Cost Breakdown</h2>
+<table>
+<thead><tr><th>Component</th><th>Monthly Cost</th></tr></thead>
+<tbody>
+<tr><td>Hetzner VPS (CX22)</td><td>~$6</td></tr>
+<tr><td>Z.AI Coding Plan</td><td>Varies (affordable)</td></tr>
+<tr><td>Telegram Bot</td><td>Free</td></tr>
+<tr><td>Whisper STT (local)</td><td>Free</td></tr>
+<tr><td>Edge TTS</td><td>Free</td></tr>
+<tr><td>Tavily Web Search</td><td>Free tier</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>~$6-15/month</strong></td></tr>
+</tbody>
+</table>
+<p>Compare that to ChatGPT Plus at $20/month (browser only, no automation) or Claude Pro at $20/month.</p>
+<h2>Lessons Learned</h2>
+<p><strong>1. Match your endpoint to your plan.</strong> Z.AI has two different API URLs — standard vs coding plan. Using the wrong one gives cryptic "Unknown Model" errors.</p>
+<p><strong>2. Never set empty api_key in config.yaml.</strong> An empty string overrides environment variables and breaks everything silently.</p>
+<p><strong>3. Gateway restarts need proper permissions.</strong> If running as a systemd service, you need passwordless sudoers for the restart command.</p>
+<p><strong>4. Local Whisper model names matter.</strong> Use <code>base</code>, <code>tiny</code>, <code>small</code> — not OpenAI's <code>whisper-1</code> which is an API model name.</p>
+<p><strong>5. Compression is your friend.</strong> Long conversations eat up context windows. Hermes auto-compresses old messages while protecting recent ones.</p>
+<p><strong>6. Start simple, then automate.</strong> Get the basic chatbot working first. Add voice, then cron jobs, then memory.</p>
+<h2>What's Next</h2>
+<p>I'm exploring:</p>
+<ul>
+<li><strong>Local LLM fallback</strong> — Running Qwen 3.5 on the VPS as a backup when cloud APIs are down</li>
+<li><strong>Browser automation</strong> — Using Browserbase for more complex web interactions</li>
+<li><strong>Multi-platform</strong> — Adding Discord and Slack integrations</li>
+<li><strong>Automated blogging</strong> — Having Hermes research, write, and publish articles</li>
+</ul>
+<h2>Final Thoughts</h2>
+<p>Building an always-on AI assistant used to require a team of engineers, expensive cloud infrastructure, and months of development. Today, with tools like Hermes Agent, a single developer can set up a powerful, autonomous AI assistant in a few hours on a $6/month VPS.</p>
+<p>The result isn't just a chatbot. It's a genuine assistant that understands context, remembers preferences, executes tasks, and proactively delivers information. It's the closest thing to having JARVIS in your pocket.</p>
+<p>If you're interested in building something similar, the Hermes Agent GitHub repo has excellent documentation and an active community. The setup I've described here took me from zero to a fully functional AI assistant in one afternoon.</p>
+<p>The future of personal AI isn't in browser tabs. It's in your messaging apps, running autonomously, always ready.</p>
+<hr>
+<p><strong>Tech Stack Summary:</strong></p>
+<ul>
+<li>VPS: Hetzner CX22 (4 vCPU, 8 GB RAM)</li>
+<li>OS: Ubuntu 24.04 LTS</li>
+<li>AI Framework: Hermes Agent v0.5.0 by Nous Research</li>
+<li>LLM: GLM-5 Turbo via Z.AI Coding Plan</li>
+<li>Messaging: Telegram Bot API</li>
+<li>STT: faster-whisper (local, CPU)</li>
+<li>TTS: Microsoft Edge TTS (free)</li>
+<li>Search: Tavily API</li>
+<li>Scheduling: Hermes cron jobs</li>
+<li>Version Control: Git + GitHub</li>
+</ul>
+<p><em>If you found this useful, clap and follow for more articles on AI, automation, and building with open-source tools.</em></p>
+</article>
+</body>
+</html>
