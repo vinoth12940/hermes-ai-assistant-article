@@ -420,6 +420,56 @@ hermes update    # Update to latest version</code></p>
 
 <hr>
 
+<h2>The Admin Dashboard: Full Control From Your Browser</h2>
+
+<p>One thing I realized after running Hermes for a few weeks — I was SSH'd into my VPS constantly. Checking gateway status. Editing config files. Reading logs. Managing cron jobs. It worked, but it wasn't scalable.</p>
+
+<p>So I built a full admin dashboard for Hermes.</p>
+
+<p><strong>Hermes Admin Dashboard</strong> is a Next.js 16 web application that gives you complete control over your agent from any browser. No additional database, no Docker, no Redis — it reads directly from Hermes' existing data sources.</p>
+
+<p><strong>15 pages. 52 source files. 23 API routes. 74MB RAM.</strong></p>
+
+<p>What you can do from the dashboard:</p>
+
+<ul>
+<li><strong>System Monitoring</strong> — Live CPU, memory, and disk stats, gateway status, connected platforms, refreshing every 5 seconds</li>
+<li><strong>Configuration Editor</strong> — Edit config.yaml through a structured form with real-time validation. Change models, switch providers, modify AI personalities</li>
+<li><strong>API Keys & Env Variables</strong> — View and edit .env with sensitive values masked for security</li>
+<li><strong>Cron Jobs Manager</strong> — Create, pause, resume, run, and delete scheduled jobs with one click</li>
+<li><strong>Session History</strong> — Browse every conversation with search and pagination</li>
+<li><strong>Memory Viewer</strong> — See what the agent remembers about you and its own notes</li>
+<li><strong>Log Viewer</strong> — Browse logs with search, filtering, and live streaming</li>
+<li><strong>File Browser</strong> — Navigate the entire filesystem from your browser</li>
+<li><strong>Model Playground</strong> — Test any LLM model interactively, verify API connectivity</li>
+<li><strong>Agent MD & Soul MD</strong> — Edit the agent's development guide and personality/behavior directly</li>
+<li><strong>Alert Rules</strong> — Set CPU, memory, and gateway thresholds with Telegram notifications</li>
+<li><strong>Audit Log</strong> — Every configuration change tracked with timestamps</li>
+<li><strong>Config Backups</strong> — Automatic backups before any edit, one-click restore</li>
+<li><strong>Background Processes</strong> — Monitor all active Hermes processes</li>
+<li><strong>Skills Browser</strong> — View all installed skills organized by category</li>
+</ul>
+
+<p>The dashboard is exposed through a Cloudflare Tunnel — zero open ports, auto HTTPS, DDoS protection. One command and it's accessible from anywhere.</p>
+
+<p><img src="https://vinoth12940.github.io/hermes-dashboard-article/images/dashboard.png" alt="Hermes Admin Dashboard - Main overview page" style="max-width:100%;"></p>
+
+<p><em>The main dashboard — live system stats, gateway status, connected platforms, and quick action buttons.</em></p>
+
+<p><img src="https://vinoth12940.github.io/hermes-dashboard-article/images/config.png" alt="Configuration Editor" style="max-width:100%;"></p>
+
+<p><em>The configuration editor — structured form for config.yaml with tabs for Models, API Keys, Display, and Gateway.</em></p>
+
+<p><img src="https://vinoth12940.github.io/hermes-dashboard-article/images/cron.png" alt="Cron Jobs Manager" style="max-width:100%;"></p>
+
+<p><em>Cron Jobs Manager — create, run, pause, and delete scheduled jobs with one click.</em></p>
+
+<p>I wrote a detailed article about building the dashboard — architecture, the bugs I hit, security, and performance. Read the full breakdown here: <a href="https://medium.com/@vinoth_61225/i-built-a-full-admin-dashboard-for-my-ai-agent-heres-how"><strong>"I Built a Full Admin Dashboard for My AI Agent — Here's How" on Medium</strong></a></p>
+
+<p>Dashboard code: <a href="https://github.com/vinoth12940/hermes-dashboard">github.com/vinoth12940/hermes-dashboard</a></p>
+
+<hr>
+
 <h2>Final Thoughts</h2>
 
 <p>Building an always-on AI assistant used to require a team of engineers, expensive cloud infrastructure, and months of development. Today, with tools like Hermes Agent, a single developer can set up a powerful, autonomous AI assistant in a few hours on a $6/month VPS.</p>
@@ -439,6 +489,8 @@ hermes update    # Update to latest version</code></p>
 <li>OS: Ubuntu 24.04 LTS</li>
 <li>AI Framework: Hermes Agent by Nous Research</li>
 <li>LLM: GLM-5 Turbo via Z.AI Coding Plan</li>
+<li>Dashboard: Next.js 16 (Hermes Admin Dashboard)</li>
+<li>Exposure: Cloudflare Tunnel (zero open ports, auto HTTPS)</li>
 <li>Messaging: Telegram Bot API</li>
 <li>STT: faster-whisper (local, CPU)</li>
 <li>TTS: Microsoft Edge TTS (free)</li>
