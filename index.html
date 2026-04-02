@@ -75,17 +75,16 @@
 
 <p>Key features that sold me:</p>
 
-<table>
-  <tr><th>Feature</th><th>What it does</th></tr>
-  <tr><td>Multi-platform messaging</td><td>Telegram, Discord, Slack, WhatsApp, Signal</td></tr>
-  <tr><td>Voice messages</td><td>Send voice, get voice back</td></tr>
-  <tr><td>Tool execution</td><td>Run shell commands, browse the web, manage files</td></tr>
-  <tr><td>Scheduled tasks</td><td>Cron jobs for daily briefings</td></tr>
-  <tr><td>Persistent memory</td><td>Remembers things across sessions</td></tr>
-  <tr><td>Skills system</td><td>Extensible with community skills</td></tr>
-  <tr><td>Smart model routing</td><td>Cheap models for simple tasks, powerful ones for complex work</td></tr>
-  <tr><td>Sub-agent delegation</td><td>Spawn parallel agents for complex tasks</td></tr>
-</table>
+<ul>
+  <li><strong>Multi-platform messaging</strong> — Telegram, Discord, Slack, WhatsApp, Signal</li>
+  <li><strong>Voice messages</strong> — Send voice, get voice back</li>
+  <li><strong>Tool execution</strong> — Run shell commands, browse the web, manage files</li>
+  <li><strong>Scheduled tasks</strong> — Cron jobs for daily briefings</li>
+  <li><strong>Persistent memory</strong> — Remembers things across sessions</li>
+  <li><strong>Skills system</strong> — Extensible with community skills</li>
+  <li><strong>Smart model routing</strong> — Cheap models for simple tasks, powerful ones for complex work</li>
+  <li><strong>Sub-agent delegation</strong> — Spawn parallel agents for complex tasks</li>
+</ul>
 
 <img src="https://vinoth12940.github.io/hermes-ai-assistant-article/images/01_architecture.png" alt="System Architecture Diagram">
 <p class="caption">The system architecture: You → Telegram → Hermes Agent on VPS → Tools & Services</p>
@@ -94,16 +93,17 @@
 
 <p>Here's the beauty — you don't need expensive hardware.</p>
 
-<table>
-  <tr><th>Spec</th><th>Detail</th></tr>
-  <tr><td>Provider</td><td>Hetzner Cloud (Helsinki)</td></tr>
-  <tr><td>Plan</td><td>CX22</td></tr>
-  <tr><td>CPU</td><td>4 vCPU AMD EPYC</td></tr>
-  <tr><td>RAM</td><td>8 GB</td></tr>
-  <tr><td>Disk</td><td>150 GB NVMe SSD</td></tr>
-  <tr><td>OS</td><td>Ubuntu 24.04 LTS</td></tr>
-  <tr><td>Cost</td><td>~$6/month (€5.47)</td></tr>
-</table>
+<p><strong>My setup:</strong></p>
+
+<ul>
+  <li><strong>Provider:</strong> Hetzner Cloud (Helsinki)</li>
+  <li><strong>Plan:</strong> CX22</li>
+  <li><strong>CPU:</strong> 4 vCPU AMD EPYC</li>
+  <li><strong>RAM:</strong> 8 GB</li>
+  <li><strong>Disk:</strong> 150 GB NVMe SSD</li>
+  <li><strong>OS:</strong> Ubuntu 24.04 LTS</li>
+  <li><strong>Cost:</strong> ~$6/month (€5.47)</li>
+</ul>
 
 <p>That's it. No GPU. No fancy hardware. Just a basic VPS.</p>
 
@@ -136,18 +136,17 @@ pip install -e .</code></pre>
 
 <h2>Step 3: Choose Your LLM Provider</h2>
 
-<p>This is where you decide which AI "brain" powers your assistant. Hermes supports dozens of providers:</p>
+<p>Hermes supports dozens of providers. Here are the main ones:</p>
 
-<table>
-  <tr><th>Provider</th><th>Models</th><th>Cost</th></tr>
-  <tr><td>OpenAI</td><td>GPT-4o, GPT-4</td><td>Pay-per-token</td></tr>
-  <tr><td>Anthropic</td><td>Claude Opus, Sonnet, Haiku</td><td>Pay-per-token</td></tr>
-  <tr><td>Google</td><td>Gemini Pro, Flash</td><td>Pay-per-token</td></tr>
-  <tr><td>OpenRouter</td><td>200+ models</td><td>Pay-per-token</td></tr>
-  <tr><td>Z.AI / GLM</td><td>GLM-5 Turbo</td><td>Subscription (what I use)</td></tr>
-  <tr><td>DeepSeek</td><td>DeepSeek-V3, R1</td><td>Pay-per-token</td></tr>
-  <tr><td>Nous Research</td><td>Hermes models</td><td>Pay-per-token</td></tr>
-</table>
+<ul>
+  <li><strong>OpenAI</strong> — GPT-4o, GPT-4 (pay-per-token)</li>
+  <li><strong>Anthropic</strong> — Claude Opus, Sonnet, Haiku (pay-per-token)</li>
+  <li><strong>Google</strong> — Gemini Pro, Flash (pay-per-token)</li>
+  <li><strong>OpenRouter</strong> — 200+ models (pay-per-token)</li>
+  <li><strong>Z.AI / GLM</strong> — GLM-5 Turbo (subscription — what I use)</li>
+  <li><strong>DeepSeek</strong> — DeepSeek-V3, R1 (pay-per-token)</li>
+  <li><strong>Nous Research</strong> — Hermes models (pay-per-token)</li>
+</ul>
 
 <p><strong>My choice: Z.AI Coding Plan</strong> — GLM-5 Turbo at a very affordable subscription price. Not pay-per-token.</p>
 
@@ -231,20 +230,19 @@ voice:
 
 <p>This opens an interactive selector. For Telegram, I enabled:</p>
 
-<table>
-  <tr><th>Tool</th><th>What it does</th></tr>
-  <tr><td>terminal</td><td>Run shell commands on the VPS</td></tr>
-  <tr><td>file</td><td>Read, write, search files</td></tr>
-  <tr><td>web</td><td>Web search and page extraction</td></tr>
-  <tr><td>browser</td><td>Browser automation (Browserbase)</td></tr>
-  <tr><td>cronjob</td><td>Schedule recurring tasks</td></tr>
-  <tr><td>memory</td><td>Persistent cross-session memory</td></tr>
-  <tr><td>vision</td><td>Analyze images with AI</td></tr>
-  <tr><td>code_execution</td><td>Run Python scripts in sandbox</td></tr>
-  <tr><td>delegation</td><td>Spawn sub-agents for parallel tasks</td></tr>
-  <tr><td>tts</td><td>Voice message replies</td></tr>
-  <tr><td>skills</td><td>Load extensible skill sets</td></tr>
-</table>
+<ul>
+  <li><strong>terminal</strong> — Run shell commands on the VPS</li>
+  <li><strong>file</strong> — Read, write, search files</li>
+  <li><strong>web</strong> — Web search and page extraction</li>
+  <li><strong>browser</strong> — Browser automation (Browserbase)</li>
+  <li><strong>cronjob</strong> — Schedule recurring tasks</li>
+  <li><strong>memory</strong> — Persistent cross-session memory</li>
+  <li><strong>vision</strong> — Analyze images with AI</li>
+  <li><strong>code_execution</strong> — Run Python scripts in sandbox</li>
+  <li><strong>delegation</strong> — Spawn sub-agents for parallel tasks</li>
+  <li><strong>tts</strong> — Voice message replies</li>
+  <li><strong>skills</strong> — Load extensible skill sets</li>
+</ul>
 
 <p>After enabling tools, send <code>/reset</code> in Telegram to activate them.</p>
 
@@ -371,26 +369,26 @@ hermes update    # Update to latest version</code></pre>
 <img src="https://vinoth12940.github.io/hermes-ai-assistant-article/images/03_cost_comparison.png" alt="Cost Comparison Chart">
 <p class="caption">Monthly cost comparison — Hermes vs commercial AI subscriptions.</p>
 
-<table>
-  <tr><th>Component</th><th>Cost</th></tr>
-  <tr><td>Hetzner VPS (CX22)</td><td>~$6/month</td></tr>
-  <tr><td>Z.AI Coding Plan (GLM-5 Turbo)</td><td>Subscription (very affordable)</td></tr>
-  <tr><td>Telegram Bot</td><td>Free</td></tr>
-  <tr><td>Whisper STT (local)</td><td>Free</td></tr>
-  <tr><td>Edge TTS</td><td>Free</td></tr>
-  <tr><td>Tavily Web Search</td><td>Free tier</td></tr>
-  <tr><td><strong>Total</strong></td><td><strong>~$6-15/month</strong></td></tr>
-</table>
+<p>Here's what it costs me:</p>
+
+<ul>
+  <li><strong>Hetzner VPS (CX22):</strong> ~$6/month</li>
+  <li><strong>Z.AI Coding Plan (GLM-5 Turbo):</strong> Subscription (very affordable)</li>
+  <li><strong>Telegram Bot:</strong> Free</li>
+  <li><strong>Whisper STT (local):</strong> Free</li>
+  <li><strong>Edge TTS:</strong> Free</li>
+  <li><strong>Tavily Web Search:</strong> Free tier</li>
+  <li><strong>Total: ~$6-15/month</strong></li>
+</ul>
 
 <p>Compare that to:</p>
 
-<table>
-  <tr><th>Service</th><th>Cost</th><th>Limitations</th></tr>
-  <tr><td>ChatGPT Plus</td><td>$20/month</td><td>Browser only, no automation, no voice</td></tr>
-  <tr><td>Claude Pro</td><td>$20/month</td><td>Browser only, no automation</td></tr>
-  <tr><td>Custom agent cloud</td><td>$50-200+/month</td><td>Complex setup, vendor lock-in</td></tr>
-  <tr><td><strong>Hermes Agent</strong></td><td><strong>~$6-15/month</strong></td><td><strong>Full control, autonomous, always-on</strong></td></tr>
-</table>
+<ul>
+  <li><strong>ChatGPT Plus:</strong> $20/month — browser only, no automation, no voice</li>
+  <li><strong>Claude Pro:</strong> $20/month — browser only, no automation</li>
+  <li><strong>Custom agent cloud:</strong> $50-200+/month — complex setup, vendor lock-in</li>
+  <li><strong>Hermes Agent:</strong> ~$6-15/month — full control, autonomous, always-on</li>
+</ul>
 
 <h2>The Admin Dashboard: Full Control From Your Browser</h2>
 
@@ -404,24 +402,23 @@ hermes update    # Update to latest version</code></pre>
 
 <p>What you can do from the dashboard:</p>
 
-<table>
-  <tr><th>Page</th><th>What it does</th></tr>
-  <tr><td>Dashboard</td><td>Live CPU, memory, disk stats, gateway status, connected platforms</td></tr>
-  <tr><td>Configuration</td><td>Edit config.yaml through a structured form with validation</td></tr>
-  <tr><td>Env Variables</td><td>View and edit .env with masked sensitive values</td></tr>
-  <tr><td>Cron Jobs</td><td>Create, pause, resume, run, delete scheduled jobs</td></tr>
-  <tr><td>Sessions</td><td>Browse conversation history with search and pagination</td></tr>
-  <tr><td>Memory</td><td>View agent memory, user profile, and soul data</td></tr>
-  <tr><td>Logs</td><td>Browse logs with search, filtering, and live streaming</td></tr>
-  <tr><td>Files</td><td>Navigate the entire filesystem from your browser</td></tr>
-  <tr><td>Model Playground</td><td>Test any LLM model interactively</td></tr>
-  <tr><td>Agent MD / Soul MD</td><td>Edit the agent's dev guide and personality</td></tr>
-  <tr><td>Alerts</td><td>Set CPU, memory, gateway thresholds with Telegram notifications</td></tr>
-  <tr><td>Audit Log</td><td>Every config change tracked with timestamps</td></tr>
-  <tr><td>Config Backups</td><td>Automatic backups before any edit, one-click restore</td></tr>
-  <tr><td>Processes</td><td>Monitor all active Hermes background processes</td></tr>
-  <tr><td>Skills</td><td>Browse all installed skills by category</td></tr>
-</table>
+<ul>
+  <li><strong>Dashboard</strong> — Live CPU, memory, disk stats, gateway status, connected platforms</li>
+  <li><strong>Configuration</strong> — Edit config.yaml through a structured form with validation</li>
+  <li><strong>Env Variables</strong> — View and edit .env with masked sensitive values</li>
+  <li><strong>Cron Jobs</strong> — Create, pause, resume, run, delete scheduled jobs</li>
+  <li><strong>Sessions</strong> — Browse conversation history with search and pagination</li>
+  <li><strong>Memory</strong> — View agent memory, user profile, and soul data</li>
+  <li><strong>Logs</strong> — Browse logs with search, filtering, and live streaming</li>
+  <li><strong>Files</strong> — Navigate the entire filesystem from your browser</li>
+  <li><strong>Model Playground</strong> — Test any LLM model interactively</li>
+  <li><strong>Agent MD / Soul MD</strong> — Edit the agent's dev guide and personality</li>
+  <li><strong>Alerts</strong> — Set CPU, memory, gateway thresholds with Telegram notifications</li>
+  <li><strong>Audit Log</strong> — Every config change tracked with timestamps</li>
+  <li><strong>Config Backups</strong> — Automatic backups before any edit, one-click restore</li>
+  <li><strong>Processes</strong> — Monitor all active Hermes background processes</li>
+  <li><strong>Skills</strong> — Browse all installed skills by category</li>
+</ul>
 
 <p>Exposed through a Cloudflare Tunnel — zero open ports, auto HTTPS, DDoS protection.</p>
 
@@ -477,21 +474,20 @@ hermes update    # Update to latest version</code></pre>
 
 <h3>Tech Stack</h3>
 
-<table>
-  <tr><th>Layer</th><th>Technology</th></tr>
-  <tr><td>VPS</td><td>Hetzner CX22 (4 vCPU, 8 GB RAM, 150 GB NVMe)</td></tr>
-  <tr><td>OS</td><td>Ubuntu 24.04 LTS</td></tr>
-  <tr><td>AI Framework</td><td>Hermes Agent by Nous Research</td></tr>
-  <tr><td>LLM</td><td>GLM-5 Turbo via Z.AI Coding Plan</td></tr>
-  <tr><td>Dashboard</td><td>Next.js 16 (Hermes Admin Dashboard)</td></tr>
-  <tr><td>Exposure</td><td>Cloudflare Tunnel (zero open ports, auto HTTPS)</td></tr>
-  <tr><td>Messaging</td><td>Telegram Bot API</td></tr>
-  <tr><td>STT</td><td>faster-whisper (local, CPU)</td></tr>
-  <tr><td>TTS</td><td>Microsoft Edge TTS (free)</td></tr>
-  <tr><td>Search</td><td>Tavily API</td></tr>
-  <tr><td>Scheduling</td><td>Hermes cron jobs</td></tr>
-  <tr><td>Version Control</td><td>Git + GitHub</td></tr>
-</table>
+<ul>
+  <li><strong>VPS:</strong> Hetzner CX22 (4 vCPU, 8 GB RAM, 150 GB NVMe)</li>
+  <li><strong>OS:</strong> Ubuntu 24.04 LTS</li>
+  <li><strong>AI Framework:</strong> Hermes Agent by Nous Research</li>
+  <li><strong>LLM:</strong> GLM-5 Turbo via Z.AI Coding Plan</li>
+  <li><strong>Dashboard:</strong> Next.js 16 (Hermes Admin Dashboard)</li>
+  <li><strong>Exposure:</strong> Cloudflare Tunnel (zero open ports, auto HTTPS)</li>
+  <li><strong>Messaging:</strong> Telegram Bot API</li>
+  <li><strong>STT:</strong> faster-whisper (local, CPU)</li>
+  <li><strong>TTS:</strong> Microsoft Edge TTS (free)</li>
+  <li><strong>Search:</strong> Tavily API</li>
+  <li><strong>Scheduling:</strong> Hermes cron jobs</li>
+  <li><strong>Version Control:</strong> Git + GitHub</li>
+</ul>
 
 <p><em>If you found this useful, follow me for more articles on AI, automation, and building with open-source tools.</em></p>
 
